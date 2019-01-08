@@ -1,0 +1,54 @@
+{
+  "name": "vue-query-normalizer",
+  "version": "0.0.1",
+  "description": "Query normalizer for Vue Router",
+  "author": "Dmitriy Tatarintsev <tatarintsevd@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/dmitriytat/vue-query-normalizer#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmitriytat/vue-query-normalizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dmitriytat/vue-query-normalizer/issues"
+  },
+  "main": "dist/vue-query-normalizer.common.js",
+  "module": "dist/vue-query-normalizer.esm.js",
+  "scripts": {
+    "build": "rollup -c --environment INCLUDE_DEPS,BUILD:production",
+    "test": "test",
+    "lint": "eslint index.js"
+  },
+  "keywords": [
+    "vue",
+    "router",
+    "routing",
+    "query"
+  ],
+  "browserslist": [
+    "last 2 versions"
+  ],
+  "typings": "types/index.d.ts",
+  "files": [
+    "src/*.js",
+    "dist/*.js",
+    "types/*.d.ts"
+  ],
+  "peerDependencies": {
+    "vue": "^2.5.0",
+    "vue-router": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.3",
+    "eslint": "^5.12.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "rollup": "^1.0.2",
+    "rollup-plugin-babel": "^4.2.0"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base"
+  }
+}
