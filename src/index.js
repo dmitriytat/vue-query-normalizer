@@ -18,14 +18,67 @@ function isEqual(a, b) {
   return true;
 }
 
+function proceedQuery(query = {}, queryOptions = {}, check = false) {
+  const _query = Object.entries(queryOptions).reduce((q, [key, params]) => {
+    const rawValue = query[key];
+    let value;
+
+    if (typeof rawValue === 'undefined') {
+      value = params.default;
+    } else if (typeof params.in === 'function') {
+      value = params.in.call(this, rawValue);
+    } else if (typeof params.type !== 'undefined') {
+      value = params.type(rawValue);
+    }
+
+    if (typeof params.type !== 'undefined') {
+      if (!(Object(value) instanceof params.type)) {
+        // eslint-disable-next-line no-console
+        console.warn('Query type error: ', key, value);
+      }
+    }
+
+    q[key] = value;
+
+    return q;
+  }, {});
+
+  this._query = _query;
+
+  if (check) {
+    const newQuery = this.$queryGet(_query);
+    const isEquivalent = isEqual(this.$route.query, newQuery);
+
+    if (!isEquivalent) {
+      this.$router.replace({ query: newQuery });
+
+      return;
+    }
+  }
+
+  const { queryReady } = this.$options;
+
+  if (typeof queryReady === 'function') {
+    queryReady.call(this);
+  }
+}
+
 const QueryNormalizer = {
   install(Vue) {
     Vue.mixin({
+      beforeCreate() {
+        const queryOptions = this.$options.query;
+
+        if (queryOptions) {
+          Vue.util.defineReactive(this, '_query', {});
+        }
+      },
+
       created() {
         const queryOptions = this.$options.query;
 
         if (queryOptions) {
-          this.$queryProceed(this.$route.query, queryOptions, true);
+          proceedQuery.call(this, this.$route.query, queryOptions, true);
         }
       },
 
@@ -34,7 +87,7 @@ const QueryNormalizer = {
           const queryOptions = this.$options.query;
 
           if (queryOptions) {
-            this.$queryProceed(query, queryOptions);
+            proceedQuery.call(this, query, queryOptions);
           }
         },
       },
@@ -75,54 +128,6 @@ const QueryNormalizer = {
         {});
     };
 
-    Vue.prototype.$queryProceed = function (
-      query = {},
-      queryOptions = {},
-      check = false,
-    ) {
-      const _query = Object.entries(queryOptions).reduce((q, [key, params]) => {
-        const rawValue = query[key];
-        let value;
-
-        if (typeof rawValue === 'undefined') {
-          value = params.default;
-        } else if (typeof params.in === 'function') {
-          value = params.in.call(this, rawValue);
-        } else if (typeof params.type !== 'undefined') {
-          value = params.type(rawValue);
-        }
-
-        if (typeof params.type !== 'undefined') {
-          if (!(Object(value) instanceof params.type)) {
-            console.warn('Query type error: ', key, value);
-          }
-        }
-
-        q[key] = value;
-
-        return q;
-      }, {});
-
-      this._query = _query;
-
-      if (check) {
-        const newQuery = this.$queryGet(_query);
-        const isEquivalent = isEqual(this.$route.query, newQuery);
-
-        if (!isEquivalent) {
-          this.$router.replace({ query: newQuery });
-
-          return;
-        }
-      }
-
-      const { loadData } = this.$options;
-
-      if (typeof loadData === 'function') {
-        loadData.call(this);
-      }
-    };
-
     Object.defineProperty(Vue.prototype, '$query', {
       get() {
         return this._query;
@@ -132,4 +137,3 @@ const QueryNormalizer = {
 };
 
 export default QueryNormalizer;
-QueryNormalizer;
