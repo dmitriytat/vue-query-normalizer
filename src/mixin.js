@@ -3,26 +3,25 @@
 
 import Vue from 'vue';
 
-function isEqual(a, b) {
-  const aProps = Object.getOwnPropertyNames(a);
-  const bProps = Object.getOwnPropertyNames(b);
-
-  if (aProps.length !== bProps.length) {
-    return false;
-  }
-
-  for (let i = 0; i < aProps.length; i += 1) {
-    const key = aProps[i];
-    if (String(a[key]) !== String(b[key])) {
-      return false;
-    }
-  }
-
-  return true;
+/**
+ * Is patch has new values
+ * @param {{string: *}} options - query options
+ * @param {{string: *}} patch - query patch
+ * @param {{string: *}} query - $route.query
+ * @return {boolean}
+ */
+function isEqual(options, patch, query) {
+  return Object.keys(options).every(key => String(patch[key]) === String(query[key]));
 }
 
-function proceedQuery(query = {}, queryOptions = {}, check = false) {
-  const _query = Object.entries(queryOptions).reduce((q, [key, params]) => {
+/**
+ * Do logic
+ * @param {{string: *}} options - query options
+ * @param {{string: *}} query - $route.query
+ * @param {boolean} check - initial check
+ */
+function proceedQuery(options = {}, query = {}, check = false) {
+  const _query = Object.entries(options).reduce((q, [key, params]) => {
     const rawValue = query[key];
     let value;
 
@@ -50,7 +49,7 @@ function proceedQuery(query = {}, queryOptions = {}, check = false) {
 
   if (check) {
     const newQuery = this.$queryGet(_query);
-    const isEquivalent = isEqual(this.$route.query, newQuery);
+    const isEquivalent = isEqual(options, newQuery, this.$route.query);
 
     if (!isEquivalent) {
       this.$router.replace({ query: newQuery });
@@ -68,9 +67,9 @@ function proceedQuery(query = {}, queryOptions = {}, check = false) {
 
 const QueryNormalizerMixin = {
   beforeCreate() {
-    const queryOptions = this.$options.query;
+    const options = this.$options.query;
 
-    if (queryOptions) {
+    if (options) {
       Vue.util.defineReactive(this, '_query', {});
 
       Object.defineProperty(this, '$query', {
@@ -82,28 +81,28 @@ const QueryNormalizerMixin = {
   },
 
   created() {
-    const queryOptions = this.$options.query;
+    const options = this.$options.query;
 
-    if (queryOptions) {
-      proceedQuery.call(this, this.$route.query, queryOptions, true);
+    if (options) {
+      proceedQuery.call(this, options, this.$route.query, true);
     }
   },
 
   watch: {
     '$route.query': function (query) {
-      const queryOptions = this.$options.query;
+      const options = this.$options.query;
 
-      if (queryOptions) {
-        proceedQuery.call(this, query, queryOptions);
+      if (options) {
+        proceedQuery.call(this, options, query);
       }
     },
   },
 
   methods: {
     $queryGet(patch = {}) {
-      const queryOptions = this.$options.query;
+      const options = this.$options.query;
 
-      if (!queryOptions) {
+      if (!options) {
         return {};
       }
 
@@ -112,10 +111,13 @@ const QueryNormalizerMixin = {
         ...patch,
       };
 
-      return Object.entries(queryOptions)
-        .reduce((q, [key, params]) => {
+      const oldQuery = { ...this.$route.query };
+
+      return Object.entries(options)
+        .reduce((query, [key, params]) => {
           if (values[key] === params.default) {
-            return q;
+            delete query[key];
+            return query;
           }
 
           let value;
@@ -127,12 +129,14 @@ const QueryNormalizerMixin = {
           }
 
           if (value !== null && value !== false && value !== undefined) {
-            q[key] = String(value);
+            query[key] = String(value);
+          } else {
+            delete query[key];
           }
 
-          return q;
+          return query;
         },
-        {});
+        oldQuery);
     },
   },
 };
