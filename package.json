@@ -16,8 +16,10 @@
   "module": "dist/vue-query-normalizer.esm.js",
   "scripts": {
     "build": "rollup -c --environment INCLUDE_DEPS,BUILD:production",
-    "test": "test",
-    "lint": "eslint index.js"
+    "lint": "eslint index.js",
+    "test": "cross-env NODE_ENV=test jest",
+    "test:coverage": "npm run test -- --coverage",
+    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls"
   },
   "keywords": [
     "vue",
@@ -42,9 +44,11 @@
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "@babel/preset-env": "^7.2.3",
+    "babel-core": "^7.0.0-bridge.0",
     "eslint": "^5.12.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
+    "jest": "^23.6.0",
     "rollup": "^1.0.2",
     "rollup-plugin-babel": "^4.2.0"
   },

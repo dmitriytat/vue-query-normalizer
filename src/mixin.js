@@ -3,16 +3,7 @@
 
 import Vue from 'vue';
 
-/**
- * Is patch has new values
- * @param {{string: *}} options - query options
- * @param {{string: *}} patch - query patch
- * @param {{string: *}} query - $route.query
- * @return {boolean}
- */
-function isEqual(options, patch, query) {
-  return Object.keys(options).every(key => String(patch[key]) === String(query[key]));
-}
+import { isEqual } from './utils';
 
 /**
  * Do logic
@@ -20,7 +11,7 @@ function isEqual(options, patch, query) {
  * @param {{string: *}} query - $route.query
  * @param {boolean} check - initial check
  */
-function proceedQuery(options = {}, query = {}, check = false) {
+export function proceedQuery(options = {}, query = {}, check = false) {
   const _query = Object.entries(options).reduce((q, [key, params]) => {
     const rawValue = query[key];
     let value;

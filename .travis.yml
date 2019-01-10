@@ -3,6 +3,7 @@ node_js:
   - stable
 script:
   - npm run build
+  - npm run test:coveralls
 deploy:
   - provider: npm
     email: $NPM_EMAIL
