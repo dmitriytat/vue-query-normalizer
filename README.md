@@ -5,3 +5,5 @@
 [![Coverage Status](https://coveralls.io/repos/github/dmitriytat/vue-query-normalizer/badge.svg?branch=master)](https://coveralls.io/github/dmitriytat/vue-query-normalizer?branch=master)
 [![Known Vulnerabilities](https://snyk.io/test/github/dmitriytat/vue-query-normalizer/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dmitriytat/vue-query-normalizer?targetFile=package.json)
 
+Demo: [https://codesandbox.io/s/xrjwl8n8ro](https://codesandbox.io/s/xrjwl8n8ro)
+
