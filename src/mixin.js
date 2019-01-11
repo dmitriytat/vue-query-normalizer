@@ -17,7 +17,13 @@ export function proceedQuery(options = {}, query = {}, check = false) {
     let value;
 
     if (typeof rawValue === 'undefined') {
-      value = params.default;
+      let defaultValue = params.default;
+
+      if (typeof params.default === 'function') {
+        defaultValue = params.default.call(this);
+      }
+
+      value = defaultValue;
     } else if (typeof params.in === 'function') {
       value = params.in.call(this, rawValue);
     } else if (typeof params.type !== 'undefined') {
