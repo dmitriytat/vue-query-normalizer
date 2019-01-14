@@ -1,11 +1,11 @@
-import { QueryNormalizerMixin } from './mixin';
+import { queryNormalizerMixin } from './mixin';
 
 const QueryNormalizer = {
   install(Vue) {
-    Vue.mixin(QueryNormalizerMixin);
+    Vue.mixin(queryNormalizerMixin);
   },
 };
 
 export default QueryNormalizer;
 
-export { QueryNormalizerMixin };
+export { queryNormalizerMixin };
