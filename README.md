@@ -7,3 +7,97 @@
 
 Demo: [https://codesandbox.io/s/xrjwl8n8ro](https://codesandbox.io/s/xrjwl8n8ro)
 
+### Usage
+
+Mixin for component
+
+```vue
+<template>
+  <div>
+    <RouterLink :to="{ query: $queryGet({ page: $query.page - 1}) }">Prev</RouterLink>
+    <span class="current">{ $query.page }</span>
+    <RouterLink :to="{ query: $queryGet({ page: $query.page + 1 }) }">Next</RouterLink>
+  </div>
+</template>
+
+<script>
+import { queryNormalizerMixin } from 'vue-query-normalizer';
+
+export default {
+  name: 'Page',
+
+  data() {
+    return {
+      isLoading: false,
+      today: new Date(),
+    };
+  },
+
+  mixins: [
+    queryNormalizerMixin,
+  ],
+
+  // describe $query params
+  query: {
+    page: {
+      type: Number,
+      default: 1, // default value is hidden from url
+      /**
+      * Convert $route.query param to $query param
+      * @param {string} value
+      * @return {number}
+      */
+      in(value) {
+        const page = parseInt(value, 10);
+        
+        return page > 0 ? page : 1;
+      },
+      
+      /**
+      * Convert $query param to $route.query param
+      * @param {number} page
+      * @return {string}
+      */
+      out(page) {
+        return page.toString();
+      },
+    },
+    date: {
+      type: Date,
+      default() { 
+        return this.today; 
+      }
+    },
+    sort: {
+      type: String,
+      default: 'price',
+    }
+  },
+
+  // load data after query proceed
+  queryReady() {
+    const params = {
+      page: this.$query.page, // use this.$query
+      sort: this.$query.sort,
+      date: this.$query.date,
+      limit: 10,
+    };
+    
+    this.isLoading = true;
+    api.loadData(params)
+      .finally(() => {
+        this.isLoading = false;
+      })
+  },
+};
+</script>
+
+```
+
+Or plugin
+
+```js
+import QueryNormalizer from 'vue-query-normalizer';
+
+Vue.use(QueryNormalizer);
+```

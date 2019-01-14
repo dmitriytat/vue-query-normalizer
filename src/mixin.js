@@ -1,6 +1,4 @@
-/* eslint-disable no-underscore-dangle,no-restricted-syntax */
-/* eslint-disable no-param-reassign,func-names,import/prefer-default-export */
-
+/* eslint-disable no-underscore-dangle */
 import Vue from 'vue';
 
 import { isEqual } from './utils';
@@ -84,6 +82,7 @@ const queryNormalizerMixin = {
   },
 
   watch: {
+    // eslint-disable-next-line func-names
     '$route.query': function (query) {
       const options = this.$options.query;
 
@@ -106,11 +105,10 @@ const queryNormalizerMixin = {
         ...patch,
       };
 
-      const oldQuery = { ...this.$route.query };
-
       return Object.entries(options)
         .reduce((query, [key, params]) => {
           if (values[key] === params.default) {
+            // eslint-disable-next-line no-param-reassign
             delete query[key];
             return query;
           }
@@ -124,14 +122,16 @@ const queryNormalizerMixin = {
           }
 
           if (value !== null && value !== false && value !== undefined) {
+            // eslint-disable-next-line no-param-reassign
             query[key] = String(value);
           } else {
+            // eslint-disable-next-line no-param-reassign
             delete query[key];
           }
 
           return query;
         },
-        oldQuery);
+        { ...this.$route.query });
     },
   },
 };

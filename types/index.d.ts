@@ -1,18 +1,5 @@
-export type QueryOption <T> = {
-    type: (value: string) => any,
-    default: T,
-    in?: (value: string) => T,
-    out?: (value: T) => string,
-}
+import Vue, {ComponentOptions, PluginObject} from "vue/types/index";
 
-export type QueryOptions = {
-    [key: string]: QueryOption<any>,
-}
+declare const queryNormalizerMixin: ComponentOptions<Vue>;
 
-export type QueryParam = any;
-
-export type QueryParams = {
-    [key: string]: QueryParam,
-}
-
-export type Dictionary<T> = { [key: string]: T };
+declare const QueryNormalizer: PluginObject<Vue>;

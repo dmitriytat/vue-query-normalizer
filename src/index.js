@@ -7,5 +7,4 @@ const QueryNormalizer = {
 };
 
 export default QueryNormalizer;
-
 export { queryNormalizerMixin };
