@@ -75,7 +75,7 @@ const queryNormalizerMixin = {
     }
   },
 
-  created() {
+  mounted() {
     const options = this.$options.query;
 
     if (options) {
