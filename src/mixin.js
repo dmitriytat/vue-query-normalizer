@@ -26,7 +26,7 @@ export function proceedQuery(options = {}, query = {}, check = false) {
       value = params.type(rawValue);
     }
 
-    if (typeof params.type !== 'undefined') {
+    if (typeof params.type !== 'undefined' && typeof value !== 'undefined') {
       if (!(Object(value) instanceof params.type)) {
         // eslint-disable-next-line no-console
         console.warn('Query type error: ', key, value);
