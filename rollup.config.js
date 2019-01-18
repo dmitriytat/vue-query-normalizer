@@ -16,7 +16,7 @@ export default [
         format: 'es',
       },
     ],
-    external: ['vue'],
+    external: ['vue', 'vue-router'],
     plugins: [
       babel({}),
     ],
