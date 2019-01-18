@@ -4,4 +4,4 @@ declare const queryNormalizerMixin: ComponentOptions<Vue>;
 declare const QueryNormalizer: PluginObject<Vue>;
 
 export default QueryNormalizer;
-export queryNormalizerMixin;
+export {queryNormalizerMixin};
