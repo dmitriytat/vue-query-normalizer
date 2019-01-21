@@ -1,7 +1,7 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle,no-param-reassign */
 import Vue from 'vue';
 
-import { isEqual } from './utils';
+import { getQueryParams, getQueryValues, isEqual } from './utils';
 
 /**
  * Do logic
@@ -9,39 +9,11 @@ import { isEqual } from './utils';
  * @param {{string: *}} query - $route.query
  * @param {boolean} check - initial check
  */
-export function proceedQuery(options = {}, query = {}, check = false) {
-  const _query = Object.entries(options).reduce((q, [key, params]) => {
-    const rawValue = query[key];
-    let value;
-
-    if (typeof rawValue === 'undefined') {
-      if (typeof params.default === 'function') {
-        value = params.default.call(this);
-      } else {
-        value = params.default;
-      }
-    } else if (typeof params.in === 'function') {
-      value = params.in.call(this, rawValue);
-    } else if (typeof params.type !== 'undefined') {
-      value = params.type(rawValue);
-    }
-
-    if (typeof params.type !== 'undefined' && typeof value !== 'undefined') {
-      if (!(Object(value) instanceof params.type)) {
-        // eslint-disable-next-line no-console
-        console.warn('Query type error: ', key, value);
-      }
-    }
-
-    q[key] = value;
-
-    return q;
-  }, {});
-
-  this._query = _query;
+export function proceed(options = {}, query = {}, check = false) {
+  this._query = getQueryValues.call(this, options, query);
 
   if (check) {
-    const newQuery = this.$queryGet(_query);
+    const newQuery = this.$queryGet(this._query);
     const isEquivalent = isEqual(options, newQuery, this.$route.query);
 
     if (!isEquivalent) {
@@ -77,7 +49,7 @@ const queryNormalizerMixin = {
     const options = this.$options.query;
 
     if (options) {
-      proceedQuery.call(this, options, this.$route.query, true);
+      proceed.call(this, options, this.$route.query, true);
     }
   },
 
@@ -87,7 +59,7 @@ const queryNormalizerMixin = {
       const options = this.$options.query;
 
       if (options) {
-        proceedQuery.call(this, options, query);
+        proceed.call(this, options, query);
       }
     },
   },
@@ -97,41 +69,15 @@ const queryNormalizerMixin = {
       const options = this.$options.query;
 
       if (!options) {
-        return {};
+        return this.$route.query;
       }
 
-      const values = {
+      const params = {
         ...this.$query,
         ...patch,
       };
 
-      return Object.entries(options)
-        .reduce((query, [key, params]) => {
-          if (values[key] === params.default) {
-            // eslint-disable-next-line no-param-reassign
-            delete query[key];
-            return query;
-          }
-
-          let value;
-
-          if (typeof params.out === 'function') {
-            value = params.out.call(this, values[key]);
-          } else {
-            value = values[key];
-          }
-
-          if (value !== null && value !== false && value !== undefined) {
-            // eslint-disable-next-line no-param-reassign
-            query[key] = String(value);
-          } else {
-            // eslint-disable-next-line no-param-reassign
-            delete query[key];
-          }
-
-          return query;
-        },
-        { ...this.$route.query });
+      return getQueryParams.call(this, options, params, this.$route.query);
     },
   },
 };
