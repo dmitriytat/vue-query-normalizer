@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle,no-param-reassign */
+// eslint-disable-next-line import/no-unresolved
 import Vue from 'vue';
 
 import { getQueryParams, getQueryValues, isEqual } from './utils';

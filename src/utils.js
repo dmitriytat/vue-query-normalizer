@@ -25,7 +25,7 @@ export function checkType(key, option, value) {
 
     if (!isInstanceOfType) {
       // eslint-disable-next-line no-console
-      console.warn('Query type error: ', key, value);
+      console.warn('Query type error!', key, value);
     }
   }
 }
@@ -52,6 +52,8 @@ export function getQueryValues(options, query) {
         value = option.in.call(this, rawValue);
       } else if (typeof option.type !== 'undefined') {
         value = option.type(rawValue);
+      } else {
+        value = rawValue;
       }
 
       checkType(key, option, value);
@@ -60,6 +62,32 @@ export function getQueryValues(options, query) {
 
       return params;
     }, {});
+}
+
+/**
+ * Compare $query param and default value
+ * @param {{compare: function, default: *}} option - query option
+ * @param {*} rawValue - value of $query param
+ * @return {boolean}
+ */
+export function compare(option, rawValue) {
+  let defaultValue;
+
+  if (typeof option.default === 'function') {
+    defaultValue = option.default.call(this);
+  } else {
+    defaultValue = option.default;
+  }
+
+  let isEqualValue = false;
+
+  if (typeof option.compare === 'function') {
+    isEqualValue = option.compare.call(this, rawValue, defaultValue);
+  } else {
+    isEqualValue = rawValue === defaultValue;
+  }
+
+  return isEqualValue;
 }
 
 /**
@@ -73,22 +101,7 @@ export function getQueryParams(options, params, oldQuery = {}) {
   return Object.entries(options)
     .reduce((query, [key, option]) => {
       const rawValue = params[key];
-
-      let isEqualValue = false;
-
-      if (typeof option.compare === 'function') {
-        let defaultValue;
-
-        if (typeof option.default === 'function') {
-          defaultValue = option.default.call(this);
-        } else {
-          defaultValue = option.default;
-        }
-
-        isEqualValue = option.compare.call(this, rawValue, defaultValue);
-      } else {
-        isEqualValue = rawValue === option.default;
-      }
+      const isEqualValue = compare.call(this, option, rawValue);
 
       if (isEqualValue) {
         // eslint-disable-next-line no-param-reassign
@@ -107,7 +120,7 @@ export function getQueryParams(options, params, oldQuery = {}) {
       if (value === null || value === false || value === undefined) {
         delete query[key];
       } else {
-        query[key] = String(value);
+        query[key] = String(value); // to String for url string consistency
       }
 
       return query;
