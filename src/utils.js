@@ -74,7 +74,23 @@ export function getQueryParams(options, params, oldQuery = {}) {
     .reduce((query, [key, option]) => {
       const rawValue = params[key];
 
-      if (rawValue === option.default) {
+      let isEqualValue = false;
+
+      if (typeof option.compare === 'function') {
+        let defaultValue;
+
+        if (typeof option.default === 'function') {
+          defaultValue = option.default.call(this);
+        } else {
+          defaultValue = option.default;
+        }
+
+        isEqualValue = option.compare.call(this, rawValue, defaultValue);
+      } else {
+        isEqualValue = rawValue === option.default;
+      }
+
+      if (isEqualValue) {
         // eslint-disable-next-line no-param-reassign
         delete query[key];
         return query;

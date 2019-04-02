@@ -49,10 +49,10 @@ export default {
       */
       in(value) {
         const page = parseInt(value, 10);
-        
+
         return page > 0 ? page : 1;
       },
-      
+
       /**
       * Convert $query param to $route.query param
       * @param {number} page
@@ -64,8 +64,8 @@ export default {
     },
     date: {
       type: Date,
-      default() { 
-        return this.today; 
+      default() {
+        return this.today;
       }
     },
     sort: {
@@ -82,7 +82,7 @@ export default {
       date: this.$query.date,
       limit: 10,
     };
-    
+
     this.isLoading = true;
     api.loadData(params)
       .finally(() => {
@@ -100,4 +100,36 @@ Or plugin
 import QueryNormalizer from 'vue-query-normalizer';
 
 Vue.use(QueryNormalizer);
+```
+
+### Special cases
+
+If you need to use something more complex, for example an array in query string, you need to write some extra code. First of all you need write custom comparator for default value detecting, and also you need custom in and out.
+
+`?filters=foo,bar`
+
+```js
+{
+    query: {
+      filters: {
+        type: Array,
+        default: () => ['all'],
+        in: value => (value ? value.split(',') : ['all']),
+        out: value => (value ? value.join(',') : undefined),
+        compare: (value, defaultValue) => {
+            return value.length === defaultValue.length && value.every(item => defaultValue.includes(item));
+        },
+      },
+    },
+}
+```
+
+After that you can use it.
+
+```js
+{
+  queryReady() {
+    console.log(this.$query.filters); // ["foo", "bar"]
+  }
+}
 ```
