@@ -19,7 +19,11 @@
     "lint": "eslint index.js",
     "test": "cross-env NODE_ENV=test jest",
     "test:coverage": "npm run test -- --coverage",
-    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls"
+    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls",
+    "lint:tests": "eslint --ext .js ./__tests__",
+    "lint:scripts": "eslint --ext .js ./src",
+    "lint:scripts:staged": "eslint",
+    "lint-staged": "lint-staged"
   },
   "keywords": [
     "vue",
@@ -44,17 +48,42 @@
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "@babel/preset-env": "^7.2.3",
+    "@types/jest": "^24.0.11",
     "babel-core": "^7.0.0-bridge.0",
     "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
     "eslint": "^5.12.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jest": "^22.4.1",
+    "husky": "^1.3.1",
     "jest": "^23.6.0",
+    "lint-staged": "^8.1.5",
     "rollup": "^1.1.0",
     "rollup-plugin-babel": "^4.3.0"
   },
   "eslintConfig": {
-    "extends": "airbnb-base"
+    "extends": "airbnb-base",
+    "plugins": [
+      "jest"
+    ],
+    "env": {
+      "jest/globals": true
+    }
+  },
+  "lint-staged": {
+    "__tests__/**/*.js": [
+      "npm run lint:scripts:staged -- --fix",
+      "git add"
+    ],
+    "src/**/*.js": [
+      "npm run lint:scripts:staged -- --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-staged && npm run test"
+    }
   }
 }
