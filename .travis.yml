@@ -1,9 +1,10 @@
 language: node_js
+cache: npm
 node_js:
   - stable
 script:
-  - npm run build
   - npm run test:coveralls
+  - npm run build
 deploy:
   - provider: npm
     email: $NPM_EMAIL
