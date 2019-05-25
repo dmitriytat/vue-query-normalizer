@@ -4,15 +4,12 @@
     [
       "@babel/env",
       {
-        "loose": true,
-        "useBuiltIns": "usage"
-      }
-    ]
+        "loose": true
+      },
+    ],
+    "@babel/typescript"
   ],
   "plugins": [
     "@babel/plugin-proposal-object-rest-spread"
-  ],
-  "ignore": [
-    "node_modules"
   ]
 }

@@ -1,9 +1,11 @@
-import { getQueryParams } from '../../src/utils';
+/* tslint:disable:object-literal-sort-keys */
+import { getQuery } from "../../src/utils";
+import { NormalizerOptions, NormalizerValues } from "../../types";
 
-describe('Vue query normalizer', () => {
-  describe('getQueryParams', () => {
-    it('should get params', () => {
-      const options = {
+describe("Vue query normalizer", () => {
+  describe("getQuery", () => {
+    it("should get params", () => {
+      const options: NormalizerOptions = {
         simple: {
           type: String,
         },
@@ -18,30 +20,30 @@ describe('Vue query normalizer', () => {
       };
 
       const params = {
-        simple: 'str',
+        simple: "str",
         number: 23,
         number2: 23,
       };
 
       const oldQuery = {
-        old: 'old',
+        old: "old",
       };
 
       const expected = {
-        simple: 'str',
-        number: '23',
-        number2: '23',
-        old: 'old',
+        simple: "str",
+        number: "23",
+        number2: "23",
+        old: "old",
       };
 
-      expect(getQueryParams(options, params, oldQuery)).toEqual(expected);
+      expect(getQuery(options, params, oldQuery)).toEqual(expected);
     });
 
-    it('should get params with default values', () => {
-      const options = {
+    it("should get params with default values", () => {
+      const options: NormalizerOptions = {
         simple: {
           type: String,
-          default: 'str',
+          default: "str",
         },
 
         number: {
@@ -51,7 +53,7 @@ describe('Vue query normalizer', () => {
       };
 
       const params = {
-        simple: 'str',
+        simple: "str",
         number: 23,
       };
 
@@ -59,34 +61,34 @@ describe('Vue query normalizer', () => {
 
       const expected = {};
 
-      expect(getQueryParams(options, params, oldQuery)).toEqual(expected);
+      expect(getQuery(options, params, oldQuery)).toEqual(expected);
     });
 
-    it('should not remove old', () => {
-      const options = {
+    it("should not remove old", () => {
+      const options: NormalizerOptions = {
         simple: {
           type: String,
-          default: 'str',
+          default: "str",
         },
       };
 
       const params = {
-        simple: 'str',
+        simple: "str",
       };
 
       const oldQuery = {
-        old: 'old',
+        old: "old",
       };
 
       const expected = {
-        old: 'old',
+        old: "old",
       };
 
-      expect(getQueryParams(options, params, oldQuery)).toEqual(expected);
+      expect(getQuery(options, params, oldQuery)).toEqual(expected);
     });
 
-    it('should get params with custom compare', () => {
-      const options = {
+    it("should get params with custom compareWithDefault", () => {
+      const options: NormalizerOptions = {
         array: {
           type: Array,
           default: () => [123],
@@ -96,7 +98,7 @@ describe('Vue query normalizer', () => {
         array2: {
           type: Array,
           default: () => [123],
-          out: value => value.join(','),
+          out: (value) => value.join(","),
           compare: (value, defaultValue) => String(value) === String(defaultValue),
         },
       };
@@ -109,14 +111,14 @@ describe('Vue query normalizer', () => {
       const oldQuery = {};
 
       const expected = {
-        array2: '1234,5678',
+        array2: "1234,5678",
       };
 
-      expect(getQueryParams(options, params, oldQuery)).toEqual(expected);
+      expect(getQuery(options, params, oldQuery)).toEqual(expected);
     });
 
-    it('should delete falsy values', () => {
-      const options = {
+    it("should delete falsy values", () => {
+      const options: NormalizerOptions = {
         simple: {
           type: String,
         },
@@ -130,7 +132,7 @@ describe('Vue query normalizer', () => {
         },
       };
 
-      const params = {
+      const params: NormalizerValues = {
         simple: undefined,
         number: null,
         number2: false,
@@ -138,7 +140,7 @@ describe('Vue query normalizer', () => {
 
       const expected = {};
 
-      expect(getQueryParams(options, params)).toEqual(expected);
+      expect(getQuery(options, params)).toEqual(expected);
     });
   });
 });

@@ -4,6 +4,7 @@
 module.exports = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
+  preset: 'ts-jest',
 
   // Stop running tests after the first failure
   // bail: false,
@@ -124,7 +125,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
