@@ -1,42 +1,18 @@
-/**
- * Augment the typings of Vue.js
- */
-
-import Vue from "vue/types/vue";
-
-export interface QueryOption <T> {
-    type: (value: QueryItem) => T;
-    default: () => T | T;
-    in?: (value: QueryItem) => T;
-    out?: (value: T) => QueryItem;
-}
-
-export interface QueryOptions {
-    [key: string]: QueryOption<any>;
-}
-
-export type QueryParam = any;
-
-export interface QueryParams {
-    [key: string]: QueryParam;
-}
-
-export type QueryItem = string | string[];
-
-export interface Query {
-    [key: string]: QueryItem;
-}
+/* tslint:disable:interface-name */
+import { Vue } from "vue/types/vue";
+import { LocationValues, NormalizerOptions, NormalizerValues } from "./normalizer";
 
 declare module "vue/types/vue" {
     interface Vue {
-        readonly $query: QueryParams;
-        $queryGet: (patch: QueryParams) => Query;
+        _query: NormalizerValues;
+        readonly $query: NormalizerValues;
+        $queryGet: (patch: NormalizerValues) => LocationValues;
     }
 }
 
 declare module "vue/types/options" {
     interface ComponentOptions<V extends Vue> {
-        query?: QueryOptions;
+        query?: NormalizerOptions;
         queryReady?: () => void;
     }
 }
