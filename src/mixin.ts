@@ -1,30 +1,8 @@
-/* tslint:disable:max-line-length */
 import Vue, { ComponentOptions } from "vue";
 
-import { LocationValues, NormalizerOptions, NormalizerValues, RouteValues } from "../types/normalizer";
-
-import { getQuery, getValues, isEqualQuery } from "./utils";
-
-export function proceed(this: Vue, options: NormalizerOptions = {}, query: RouteValues = {}, check: boolean = false): void {
-  this._query = getValues.call(this, options, query);
-
-  if (check) {
-    const newQuery = this.$queryGet(this._query);
-    const isEquivalent = isEqualQuery(options, newQuery, this.$route.query);
-
-    if (!isEquivalent) {
-      this.$router.replace({ query: newQuery });
-
-      return;
-    }
-  }
-
-  const { queryReady } = this.$options;
-
-  if (typeof queryReady === "function") {
-    queryReady.call(this);
-  }
-}
+import { LocationValues, NormalizerValues, RouteValues } from "../types/normalizer";
+import { proceed } from "./proceed";
+import { getQuery } from "./utils";
 
 const queryNormalizerMixin: ComponentOptions<Vue> = {
   beforeCreate(this: Vue) {
