@@ -1,6 +1,6 @@
 {
   "name": "vue-query-normalizer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Query normalizer for Vue Router",
   "author": "Dmitriy Tatarintsev <tatarintsevd@gmail.com>",
   "license": "MIT",
