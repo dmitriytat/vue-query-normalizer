@@ -1,10 +1,14 @@
 import Vue, { ComponentOptions } from "vue";
 
-import { LocationValues, NormalizerValues, RouteValues } from "../types/normalizer";
+import {LocationValues, NormalizerSettings, NormalizerValues, RouteValues} from "../types/normalizer";
 import { proceed } from "./proceed";
 import { getQuery } from "./utils";
 
-const queryNormalizerMixin: ComponentOptions<Vue> = {
+const defaultSettings: NormalizerSettings = {
+  hideDefaults: true,
+};
+
+const createQueryNormalizerMixin = (settings: NormalizerSettings = defaultSettings): ComponentOptions<Vue> => ({
   beforeCreate(this: Vue) {
     const options = this.$options.query;
 
@@ -51,9 +55,14 @@ const queryNormalizerMixin: ComponentOptions<Vue> = {
         ...patch,
       };
 
-      return getQuery.call(this, options, params, this.$route.query);
+      return getQuery.call(this, options, params, this.$route.query, settings);
     },
   },
-};
+});
 
-export { queryNormalizerMixin };
+const queryNormalizerMixin: ComponentOptions<Vue> = createQueryNormalizerMixin();
+
+export {
+  createQueryNormalizerMixin,
+  queryNormalizerMixin,
+};

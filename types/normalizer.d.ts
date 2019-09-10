@@ -19,4 +19,8 @@ export interface NormalizerOption<T> {
   compare?: (rawValue: T, defaultValue: T) => boolean;
 }
 
+export interface NormalizerSettings {
+  hideDefaults: boolean;
+}
+
 type NormalizerOptions = Dictionary<NormalizerOption<NormalizerValue>>;

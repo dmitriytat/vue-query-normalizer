@@ -2,12 +2,13 @@
 import Vue from "vue";
 
 import {
-  LocationValues,
-  NormalizerOption,
-  NormalizerOptions,
-  NormalizerValue,
-  NormalizerValues,
-  RouteValues,
+    LocationValues,
+    NormalizerOption,
+    NormalizerOptions,
+    NormalizerSettings,
+    NormalizerValue,
+    NormalizerValues,
+    RouteValues,
 } from "../types/normalizer";
 
 export function isEqualQuery(options: NormalizerOptions, patch: LocationValues, query: RouteValues): boolean {
@@ -75,11 +76,11 @@ export function getValues(this: Vue | void, options: NormalizerOptions, query: R
     }, {} as NormalizerValues);
 }
 
-export function getQuery(this: Vue | void, options: NormalizerOptions, params: NormalizerValues, oldQuery: RouteValues = {}): LocationValues {
+export function getQuery(this: Vue | void, options: NormalizerOptions, params: NormalizerValues, oldQuery: RouteValues = {}, settings: NormalizerSettings): LocationValues {
   return Object.entries(options)
     .reduce((query, [key, option]) => {
       const rawValue = params[key];
-      const isEqualValue = compareWithDefault.call(this, option, rawValue);
+      const isEqualValue = settings.hideDefaults && compareWithDefault.call(this, option, rawValue);
 
       if (isEqualValue) {
         delete query[key];
