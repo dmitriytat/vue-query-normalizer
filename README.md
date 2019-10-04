@@ -104,7 +104,8 @@ Vue.use(QueryNormalizer);
 
 ### Special cases
 
-If you need to use something more complex, for example an array in query string, you need to write some extra code. First of all you need write custom comparator for default value detecting, and also you need custom in and out.
+If you need to use something more particular, like an array in query string (for example), you should write extra code. 
+You should firstly write custom comparator for default value and customize your input and output.
 
 `?filters=foo,bar`
 
