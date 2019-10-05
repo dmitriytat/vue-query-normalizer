@@ -8,3 +8,5 @@ Looking at the [Vue Docs](https://router.vuejs.org/api/#the-route-object) it off
 UTM tags/codes are basically just another query paramter that get tacked on but dealt with elsewhere (often in an analytics platform, like Google Analytics). [Here](https://buffer.com/library/utm-guide) is an explanation of them, and [here](https://support.google.com/analytics/answer/1033867?hl=en) is specfic usage in Google Analytics.
 
 If you don't need to use one, it can be safely ignored. 
+
+For some more basic information on how to deal with query strings in vanilla JavaScript, have a look at [this page](https://raddevon.com/articles/how-to-access-query-parameters-in-javascript/).
