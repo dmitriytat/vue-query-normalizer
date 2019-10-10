@@ -10,3 +10,5 @@ UTM tags/codes are basically just another query paramter that get tacked on but 
 If you don't need to use one, it can be safely ignored. 
 
 For some more basic information on how to deal with query strings in vanilla JavaScript, have a look at [this page](https://raddevon.com/articles/how-to-access-query-parameters-in-javascript/).
+
+[Retaining React UI state without localStorage or redux-persist](https://medium.com/@kalidasm/retaining-react-ui-state-without-localstorage-or-redux-persist-63081e6ed011)
