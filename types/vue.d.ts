@@ -14,5 +14,6 @@ declare module "vue/types/options" {
     interface ComponentOptions<V extends Vue> {
         query?: NormalizerOptions;
         queryReady?: () => void;
+        queryHideDefaults?: boolean;
     }
 }

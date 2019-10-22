@@ -25,6 +25,10 @@ describe("Vue query normalizer", () => {
         number2: 23,
       };
 
+      const settings = {
+        queryHideDefaults: true,
+      };
+
       const oldQuery = {
         old: "old",
       };
@@ -36,7 +40,36 @@ describe("Vue query normalizer", () => {
         old: "old",
       };
 
-      expect(getQuery(options, params, oldQuery)).toEqual(expected);
+      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
+    });
+
+    it("should get params without default values", () => {
+      const options: NormalizerOptions = {
+        simple: {
+          type: String,
+          default: "str",
+        },
+
+        number: {
+          type: Number,
+          default: 23,
+        },
+      };
+
+      const params = {
+        simple: "str",
+        number: 23,
+      };
+
+      const settings = {
+        queryHideDefaults: true,
+      };
+
+      const oldQuery = {};
+
+      const expected = {};
+
+      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
     });
 
     it("should get params with default values", () => {
@@ -57,11 +90,18 @@ describe("Vue query normalizer", () => {
         number: 23,
       };
 
+      const settings = {
+        queryHideDefaults: false,
+      };
+
       const oldQuery = {};
 
-      const expected = {};
+      const expected = {
+        simple: "str",
+        number: "23",
+      };
 
-      expect(getQuery(options, params, oldQuery)).toEqual(expected);
+      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
     });
 
     it("should not remove old", () => {
@@ -84,7 +124,11 @@ describe("Vue query normalizer", () => {
         old: "old",
       };
 
-      expect(getQuery(options, params, oldQuery)).toEqual(expected);
+      const settings = {
+        queryHideDefaults: true,
+      };
+
+      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
     });
 
     it("should get params with custom compareWithDefault", () => {
@@ -108,13 +152,17 @@ describe("Vue query normalizer", () => {
         array2: [1234, 5678],
       };
 
+      const settings = {
+        queryHideDefaults: true,
+      };
+
       const oldQuery = {};
 
       const expected = {
         array2: "1234,5678",
       };
 
-      expect(getQuery(options, params, oldQuery)).toEqual(expected);
+      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
     });
 
     it("should delete falsy values", () => {
@@ -138,9 +186,13 @@ describe("Vue query normalizer", () => {
         number2: false,
       };
 
+      const settings = {
+        queryHideDefaults: true,
+      };
+
       const expected = {};
 
-      expect(getQuery(options, params)).toEqual(expected);
+      expect(getQuery(options, params, undefined, settings)).toEqual(expected);
     });
   });
 });
