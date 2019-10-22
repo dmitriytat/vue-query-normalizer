@@ -102,6 +102,30 @@ import QueryNormalizer from 'vue-query-normalizer';
 Vue.use(QueryNormalizer);
 ```
 
+### Settings
+
+`queryHideDefaults: true`
+
+You can hide or show default query params by option of plugin or component.
+
+```js
+Vue.use(QueryNormalizer, { queryHideDefaults: false });
+```
+
+or if you use mixin
+
+```js
+export default {
+  name: 'Page',
+
+  mixins: [
+    queryNormalizerMixin,
+  ],
+  
+  queryHideDefaults: false,
+}
+```
+
 ### Special cases
 
 If you need to use something more particular, like an array in query string (for example), you should write extra code. 

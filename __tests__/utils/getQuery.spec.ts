@@ -26,7 +26,7 @@ describe("Vue query normalizer", () => {
       };
 
       const settings = {
-        hideDefaults: true,
+        queryHideDefaults: true,
       };
 
       const oldQuery = {
@@ -62,7 +62,7 @@ describe("Vue query normalizer", () => {
       };
 
       const settings = {
-        hideDefaults: true,
+        queryHideDefaults: true,
       };
 
       const oldQuery = {};
@@ -91,7 +91,7 @@ describe("Vue query normalizer", () => {
       };
 
       const settings = {
-        hideDefaults: false,
+        queryHideDefaults: false,
       };
 
       const oldQuery = {};
@@ -125,7 +125,7 @@ describe("Vue query normalizer", () => {
       };
 
       const settings = {
-        hideDefaults: true,
+        queryHideDefaults: true,
       };
 
       expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
@@ -153,7 +153,7 @@ describe("Vue query normalizer", () => {
       };
 
       const settings = {
-        hideDefaults: true,
+        queryHideDefaults: true,
       };
 
       const oldQuery = {};
@@ -187,7 +187,7 @@ describe("Vue query normalizer", () => {
       };
 
       const settings = {
-        hideDefaults: true,
+        queryHideDefaults: true,
       };
 
       const expected = {};

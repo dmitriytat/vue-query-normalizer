@@ -20,7 +20,7 @@ export interface NormalizerOption<T> {
 }
 
 export interface NormalizerSettings {
-  hideDefaults: boolean;
+  queryHideDefaults: boolean;
 }
 
 type NormalizerOptions = Dictionary<NormalizerOption<NormalizerValue>>;

@@ -80,7 +80,7 @@ export function getQuery(this: Vue | void, options: NormalizerOptions, params: N
   return Object.entries(options)
     .reduce((query, [key, option]) => {
       const rawValue = params[key];
-      const isEqualValue = settings.hideDefaults && compareWithDefault.call(this, option, rawValue);
+      const isEqualValue = settings.queryHideDefaults && compareWithDefault.call(this, option, rawValue);
 
       if (isEqualValue) {
         delete query[key];

@@ -5,10 +5,12 @@ import { proceed } from "./proceed";
 import { getQuery } from "./utils";
 
 const defaultSettings: NormalizerSettings = {
-  hideDefaults: true,
+  queryHideDefaults: true,
 };
 
 const createQueryNormalizerMixin = (settings: NormalizerSettings = defaultSettings): ComponentOptions<Vue> => ({
+  ...settings,
+
   beforeCreate(this: Vue) {
     const options = this.$options.query;
 
@@ -45,6 +47,7 @@ const createQueryNormalizerMixin = (settings: NormalizerSettings = defaultSettin
   methods: {
     $queryGet(this: Vue, patch: NormalizerValues = {}): LocationValues {
       const options = this.$options.query;
+      const queryHideDefaults = this.$options.queryHideDefaults || false;
 
       if (!options) {
         return this.$route.query;
@@ -55,7 +58,7 @@ const createQueryNormalizerMixin = (settings: NormalizerSettings = defaultSettin
         ...patch,
       };
 
-      return getQuery.call(this, options, params, this.$route.query, settings);
+      return getQuery.call(this, options, params, this.$route.query, { queryHideDefaults });
     },
   },
 });
