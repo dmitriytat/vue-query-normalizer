@@ -2,106 +2,116 @@
 import Vue from "vue";
 
 import {
-    LocationValues,
-    NormalizerOption,
-    NormalizerOptions,
-    NormalizerSettings,
-    NormalizerValue,
-    NormalizerValues,
-    RouteValues,
+  LocationValues,
+  NormalizerOption,
+  NormalizerOptions,
+  NormalizerSettings,
+  NormalizerValue,
+  NormalizerValues,
+  RouteValue,
+  RouteValues,
 } from "../types/normalizer";
 
 export function isEqualQuery(options: NormalizerOptions, patch: LocationValues, query: RouteValues): boolean {
   return Object.keys(options).every((key) => String(patch[key]) === String(query[key]));
 }
 
-export function checkValueType(key: string, option: NormalizerOption<NormalizerValue>, value?: NormalizerValue) {
+export function checkValueType(key: string, option: NormalizerOption<NormalizerValue>, value: NormalizerValue) {
   const hasTypeAndValue = typeof option.type !== "undefined" && typeof value !== "undefined";
 
-  if (hasTypeAndValue) {
-    // @ts-ignore
-    const isInstanceOfType = Object(value) instanceof option.type;
+  if (!hasTypeAndValue) {
+    return;
+  }
 
-    if (!isInstanceOfType) {
-      console.warn("Query type error!", key, value);
-    }
+  // @ts-ignore
+  const isInstanceOfType = Object(value) instanceof option.type;
+
+  if (!isInstanceOfType) {
+    console.warn("Query type error!", key, value);
   }
 }
 
-export function compareWithDefault(this: Vue | void, option: NormalizerOption<NormalizerValue>, rawValue: NormalizerValue): boolean {
-  let defaultValue: NormalizerValue;
-
-  if (typeof option.default === "function") {
-    defaultValue = option.default.call(this);
-  } else if (typeof option.default !== "undefined") {
-    defaultValue = option.default;
-  }
-
-  let isEqualValue: boolean = false;
+export function isEqualDefault(this: Vue | void, option: NormalizerOption<NormalizerValue>, normalizerValue: NormalizerValue): boolean {
+  const defaultValue: NormalizerValue = getDefaultValue.call(this, option);
 
   if (typeof option.compare === "function") {
-    isEqualValue = option.compare.call(this, rawValue, defaultValue);
-  } else {
-    isEqualValue = rawValue === defaultValue;
+    return option.compare.call(this, normalizerValue, defaultValue);
   }
 
-  return isEqualValue;
+  return normalizerValue === defaultValue;
 }
 
-export function getValues(this: Vue | void, options: NormalizerOptions, query: RouteValues): NormalizerValues {
+function getDefaultValue(this: Vue | void, option: NormalizerOption<any>) {
+  if (typeof option.default === "function") {
+    return option.default.call(this);
+  }
+
+  return option.default;
+}
+
+function getValue(this: Vue | void, option: NormalizerOption<any>, routeValue: RouteValue) {
+  if (typeof routeValue === "undefined") {
+    return getDefaultValue.call(this, option);
+  }
+
+  if (typeof option.in === "function") {
+    return option.in.call(this, routeValue);
+  }
+
+  if (typeof option.type !== "undefined") {
+    return option.type(routeValue);
+  }
+
+  return routeValue;
+}
+
+export function getValues(this: Vue | void, options: NormalizerOptions, routeValues: RouteValues): NormalizerValues {
   return Object.entries(options)
     .reduce((params, [key, option]) => {
-      const rawValue = query[key];
-      let value;
+      params[key] = getValue.call(this, option, routeValues[key]);
 
-      if (typeof rawValue === "undefined") {
-        if (typeof option.default === "function") {
-          value = option.default.call(this);
-        } else if (typeof option.default !== "undefined") {
-          value = option.default;
-        }
-      } else if (typeof option.in === "function") {
-        value = option.in.call(this, rawValue);
-      } else if (typeof option.type !== "undefined") {
-        value = option.type(rawValue);
-      } else {
-        value = rawValue;
-      }
-
-      checkValueType(key, option, value);
-
-      params[key] = value;
+      checkValueType(key, option, params[key]);
 
       return params;
     }, {} as NormalizerValues);
 }
 
-export function getQuery(this: Vue | void, options: NormalizerOptions, params: NormalizerValues, oldQuery: RouteValues = {}, settings: NormalizerSettings): LocationValues {
+function convertToRouteValue(this: Vue | void, option: NormalizerOption<any>, normalizerValue: NormalizerValue): string {
+  let value;
+
+  if (typeof option.out === "function") {
+    value = option.out.call(this, normalizerValue);
+  } else {
+    value = normalizerValue;
+  }
+
+  if (value === null || value === false || value === undefined) {
+    return "";
+  }
+
+  return String(value); // to String for url string consistency
+}
+
+export function queryGet(this: Vue | void, options: NormalizerOptions, normalizerValues: NormalizerValues, routeValues: RouteValues = {}, settings: NormalizerSettings): LocationValues {
   return Object.entries(options)
     .reduce((query, [key, option]) => {
-      const rawValue = params[key];
-      const isEqualValue = settings.queryHideDefaults && compareWithDefault.call(this, option, rawValue);
+      const normalizerValue = normalizerValues[key];
+      const needToHide = settings.queryHideDefaults && isEqualDefault.call(this, option, normalizerValue);
 
-      if (isEqualValue) {
+      if (needToHide) {
         delete query[key];
         return query;
       }
 
-      let value;
+      const routeValue = convertToRouteValue.call(this, option, normalizerValue);
 
-      if (typeof option.out === "function") {
-        value = option.out.call(this, rawValue);
+      if (routeValue) {
+        query[key] = routeValue;
       } else {
-        value = rawValue;
-      }
-
-      if (value === null || value === false || value === undefined) {
         delete query[key];
-      } else {
-        query[key] = String(value); // to String for url string consistency
       }
 
       return query;
     },
-    { ...oldQuery });
+    { ...routeValues });
 }

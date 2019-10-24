@@ -1,9 +1,9 @@
 /* tslint:disable:object-literal-sort-keys */
-import { getQuery } from "../../src/utils";
+import { queryGet } from "../../src/utils";
 import { NormalizerOptions, NormalizerValues } from "../../types";
 
 describe("Vue query normalizer", () => {
-  describe("getQuery", () => {
+  describe("queryGet", () => {
     it("should get params", () => {
       const options: NormalizerOptions = {
         simple: {
@@ -40,7 +40,7 @@ describe("Vue query normalizer", () => {
         old: "old",
       };
 
-      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
+      expect(queryGet(options, params, oldQuery, settings)).toEqual(expected);
     });
 
     it("should get params without default values", () => {
@@ -69,7 +69,7 @@ describe("Vue query normalizer", () => {
 
       const expected = {};
 
-      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
+      expect(queryGet(options, params, oldQuery, settings)).toEqual(expected);
     });
 
     it("should get params with default values", () => {
@@ -101,7 +101,7 @@ describe("Vue query normalizer", () => {
         number: "23",
       };
 
-      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
+      expect(queryGet(options, params, oldQuery, settings)).toEqual(expected);
     });
 
     it("should not remove old", () => {
@@ -128,10 +128,10 @@ describe("Vue query normalizer", () => {
         queryHideDefaults: true,
       };
 
-      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
+      expect(queryGet(options, params, oldQuery, settings)).toEqual(expected);
     });
 
-    it("should get params with custom compareWithDefault", () => {
+    it("should get params with custom isEqualDefault", () => {
       const options: NormalizerOptions = {
         array: {
           type: Array,
@@ -162,7 +162,7 @@ describe("Vue query normalizer", () => {
         array2: "1234,5678",
       };
 
-      expect(getQuery(options, params, oldQuery, settings)).toEqual(expected);
+      expect(queryGet(options, params, oldQuery, settings)).toEqual(expected);
     });
 
     it("should delete falsy values", () => {
@@ -192,7 +192,7 @@ describe("Vue query normalizer", () => {
 
       const expected = {};
 
-      expect(getQuery(options, params, undefined, settings)).toEqual(expected);
+      expect(queryGet(options, params, undefined, settings)).toEqual(expected);
     });
   });
 });
