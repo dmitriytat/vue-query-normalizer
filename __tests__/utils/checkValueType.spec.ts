@@ -44,7 +44,7 @@ describe("Vue query normalizer", () => {
 
       const spy = jest.spyOn(global.console, "warn");
 
-      checkValueType(key, option);
+      checkValueType(key, option, undefined);
 
       expect(spy).not.toHaveBeenCalled();
     });

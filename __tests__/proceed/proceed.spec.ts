@@ -16,7 +16,7 @@ describe("Vue query normalizer", () => {
                 $router: {
                     replace: jest.fn(() => undefined),
                 },
-                _query: undefined,
+                _query: {},
             };
 
             const options: NormalizerOptions = {
@@ -37,7 +37,7 @@ describe("Vue query normalizer", () => {
             expect(instance.$options.queryReady).toHaveBeenCalled();
         });
 
-        it("should set_query, check and call queryReady", () => {
+        it("should check, set _query and call queryReady", () => {
             const instance = {
                 $options: {
                     query: {},
@@ -50,7 +50,7 @@ describe("Vue query normalizer", () => {
                 $router: {
                     replace: jest.fn(() => undefined),
                 },
-                _query: undefined,
+                _query: {},
             };
 
             const options: NormalizerOptions = {
@@ -71,7 +71,7 @@ describe("Vue query normalizer", () => {
             expect(instance.$options.queryReady).toHaveBeenCalled();
         });
 
-        it("should set_query, check and replace route", () => {
+        it("should check, not set _query and replace route", () => {
             const instance = {
                 $options: {
                     query: {},
@@ -84,7 +84,7 @@ describe("Vue query normalizer", () => {
                 $router: {
                     replace: jest.fn(() => undefined),
                 },
-                _query: undefined,
+                _query: {},
             };
 
             const options: NormalizerOptions = {
@@ -101,9 +101,9 @@ describe("Vue query normalizer", () => {
             // @ts-ignore
             proceed.call(instance, options, {}, true);
 
-            expect(instance._query).toEqual({ value: "value"});
-            expect(instance.$options.queryReady).not.toHaveBeenCalled();
             expect(instance.$router.replace).toHaveBeenCalledWith({ query: { test: "test" } });
+            expect(instance._query).toEqual({});
+            expect(instance.$options.queryReady).not.toHaveBeenCalled();
         });
     });
 });
