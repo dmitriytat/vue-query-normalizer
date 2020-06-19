@@ -5,7 +5,7 @@ import {NormalizerSettings} from "../types/normalizer";
 import {createQueryNormalizerMixin, queryNormalizerMixin} from "./mixin";
 
 const QueryNormalizer: PluginObject<Vue> = {
-  install(Vue, settings: any) {
+  install(Vue, settings: unknown) {
     Vue.mixin(createQueryNormalizerMixin(settings as NormalizerSettings));
   },
 };
